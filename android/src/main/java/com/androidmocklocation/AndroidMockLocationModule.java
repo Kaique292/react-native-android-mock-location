@@ -40,7 +40,7 @@ public class AndroidMockLocationModule extends ReactContextBaseJavaModule {
     public String getName() {
         return NAME;
     }
- 
+
     @ReactMethod
     public void setTestProviderLocation(String useProvider, Double altitude, Double latitude, Double longitude) {
         this.locationManager = (LocationManager) getReactApplicationContext()
@@ -49,12 +49,12 @@ public class AndroidMockLocationModule extends ReactContextBaseJavaModule {
         this.criteria = new Criteria();
         this.criteria.setAccuracy(Criteria.ACCURACY_FINE);
         this.criteria.setPowerRequirement(Criteria.POWER_HIGH);
- 
+
         if (useProvider == "gps") {
             this.provider = LocationManager.GPS_PROVIDER;
         } else {
             this.provider = LocationManager.NETWORK_PROVIDER;
-        } 
+        }
 
         if (this.provider != null) {
             this.locationManager.addTestProvider(this.provider, false, false, false, false, true, true, true,
@@ -112,17 +112,9 @@ public class AndroidMockLocationModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void getMockLocation(Boolean useGPS, Promise promise) {
-        LocationManager locationManager = (LocationManager) getReactApplicationContext()
-                .getSystemService(Context.LOCATION_SERVICE);
-
-        Criteria criteria = new Criteria();
-        criteria.setAccuracy(Criteria.ACCURACY_FINE);
-        criteria.setPowerRequirement(Criteria.POWER_HIGH);
-        String provider = LocationManager.NETWORK_PROVIDER;
-                 
-        if (provider != null) {
-            Location location = locationManager.getLastKnownLocation(provider);
+    public void getMockLocation(Promise promise) {
+        if (this.provider != null) {
+            Location location = this.locationManager.getLastKnownLocation(this.provider);
 
             if (location != null) {
                 double latitude = location.getLatitude();
@@ -145,7 +137,7 @@ public class AndroidMockLocationModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void stopMockLocation() {
-        if (this.locationManager != null) { 
+        if (this.locationManager != null) {
             if (this.provider != null) {
                 this.locationManager.clearTestProviderEnabled(this.provider);
                 this.locationManager.clearTestProviderLocation(this.provider);
@@ -153,10 +145,5 @@ public class AndroidMockLocationModule extends ReactContextBaseJavaModule {
             }
         }
 
-    }
-
-    @ReactMethod
-    public void multiply(double a, double b, Promise promise) {
-        promise.resolve(a * b);
     }
 }

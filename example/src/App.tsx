@@ -36,7 +36,7 @@ export default function App() {
   }
 
   async function isMocked() {
-    await getMockLocation(false)
+    await getMockLocation()
       .then((response) => {
         setMockedLocation(response);
       }).catch((err) => {

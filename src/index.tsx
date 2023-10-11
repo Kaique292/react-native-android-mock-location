@@ -7,9 +7,8 @@ type Location = {
 }
 
 type AndroidMockLocationType = {
-  multiply(a: number, b: number): Promise<number>;
   setTestProviderLocation(useProvider: 'gps' | 'network', altitude: number, latitude: number, longitude: number): void;
-  getMockLocation(useGPS: boolean): Promise<any>;
+  getMockLocation(): Promise<any>;
   stopMockLocation(): void;
   checkLocationPermission(): Promise<any>;
   requestLocationPermission(): Promise<any>;
@@ -29,18 +28,12 @@ const onModuleError = () => new Proxy({}, {
 
 const AndroidMockLocation: AndroidMockLocationType = NativeModules.AndroidMockLocation ? NativeModules.AndroidMockLocation : onModuleError();
 
-
-
-function multiply(a: number, b: number): Promise<number> {
-  return AndroidMockLocation.multiply(a, b);
-}
-
 function setMockLocation(useProvider: 'gps' | 'network', location: Location) {
   return AndroidMockLocation.setTestProviderLocation(useProvider, location.altitude, location.latitude, location.longitude);
 }
 
-function getMockLocation(useGPS: boolean) {
-  return AndroidMockLocation.getMockLocation(useGPS);
+function getMockLocation() {
+  return AndroidMockLocation.getMockLocation();
 }
 
 function stopMockLocation() {
@@ -56,7 +49,6 @@ function requestLocationPermission() {
 }
 
 export {
-  multiply,
   setMockLocation,
   getMockLocation,
   stopMockLocation,
