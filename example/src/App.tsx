@@ -5,6 +5,7 @@ import {
   View,
   Text,
   TouchableHighlight,
+  Switch,
   Image,
 } from 'react-native';
 import {
@@ -20,6 +21,7 @@ const B = ({ children }: { children: React.ReactNode }) => (
 
 export default function App() {
   const { setLocation, clearLocation, getLocationName, location } = useLocation();
+  const [provider, setProvider] = React.useState<'gps' | 'network'>('gps')
 
   const [mockedLocation, setMockedLocation] = React.useState<{
     altitude: number;
@@ -30,7 +32,7 @@ export default function App() {
   async function clearMockLocation() {
     console.log('Cleared Mock Location');
     clearLocation();
-    // stopMockLocation()
+    stopMockLocation()
   }
 
   async function isMocked() {
@@ -46,12 +48,12 @@ export default function App() {
   React.useEffect(() => {
     if (location) {
       const { id, name, ...othersParams } = location;
-      setMockLocation(false, othersParams);
+      setMockLocation(provider, othersParams);
 
       setTimeout(() => isMocked(), 400);
       return
     }
-    // return () => stopMockLocation()
+    return () => stopMockLocation()
   }, [location])
 
   return (
@@ -61,6 +63,23 @@ export default function App() {
         style={styles.bgImage}
       />
       <View style={styles.card}>
+        <View style={styles.providerContainer}>
+          <View style={styles.providerItem}>
+            <Text><B>GPS</B></Text>
+            <Switch
+              value={provider === 'gps'}
+              onChange={(event) => setProvider('gps')}
+            />
+          </View>
+          <View style={styles.providerItem}>
+            <Text><B>NETWORK</B></Text>
+            <Switch
+              value={provider === 'network'}
+              onChange={() => setProvider('network')}
+            />
+          </View>
+        </View>
+
         <Text style={styles.cardTitle}>{getLocationName()}</Text>
         <View style={styles.cardBody}>
           {location &&
@@ -108,6 +127,21 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
+  providerContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 1,
+  },
+  providerItem: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10
+  },
+  providerTitle: {
+
+  },
   card: {
     padding: 20,
     borderRadius: 5,

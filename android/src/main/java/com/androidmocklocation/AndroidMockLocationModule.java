@@ -27,6 +27,9 @@ import com.facebook.react.module.annotations.ReactModule;
 @ReactModule(name = AndroidMockLocationModule.NAME)
 public class AndroidMockLocationModule extends ReactContextBaseJavaModule {
     public static final String NAME = "AndroidMockLocation";
+    private static LocationManager locationManager;
+    private static Criteria criteria;
+    private static String provider;
 
     public AndroidMockLocationModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -37,31 +40,29 @@ public class AndroidMockLocationModule extends ReactContextBaseJavaModule {
     public String getName() {
         return NAME;
     }
-
-    // Example method
-    // See https://reactnative.dev/docs/native-modules-android
+ 
     @ReactMethod
-    public void setTestProviderLocation(Boolean useGPS, Double altitude, Double latitude, Double longitude) {
-        LocationManager locationManager = (LocationManager) getReactApplicationContext()
+    public void setTestProviderLocation(String useProvider, Double altitude, Double latitude, Double longitude) {
+        this.locationManager = (LocationManager) getReactApplicationContext()
                 .getSystemService(Context.LOCATION_SERVICE);
 
-        Criteria criteria = new Criteria();
-        criteria.setAccuracy(Criteria.ACCURACY_FINE);
-        criteria.setPowerRequirement(Criteria.POWER_HIGH);
-
-        String provider;
-        if (useGPS) {
-            provider = LocationManager.GPS_PROVIDER;
+        this.criteria = new Criteria();
+        this.criteria.setAccuracy(Criteria.ACCURACY_FINE);
+        this.criteria.setPowerRequirement(Criteria.POWER_HIGH);
+ 
+        if (useProvider == "gps") {
+            this.provider = LocationManager.GPS_PROVIDER;
         } else {
-            provider = LocationManager.NETWORK_PROVIDER;
-        }
+            this.provider = LocationManager.NETWORK_PROVIDER;
+        } 
 
-        if (provider != null) {
-            locationManager.addTestProvider(provider, false, false, false, false, true, true, true, Criteria.POWER_HIGH,
+        if (this.provider != null) {
+            this.locationManager.addTestProvider(this.provider, false, false, false, false, true, true, true,
+                    Criteria.POWER_HIGH,
                     Criteria.ACCURACY_FINE);
-            locationManager.setTestProviderEnabled(provider, true);
+            this.locationManager.setTestProviderEnabled(this.provider, true);
 
-            Location location = new Location(provider);
+            Location location = new Location(this.provider);
 
             location.setLatitude(latitude);
             location.setLongitude(longitude);
@@ -72,9 +73,9 @@ public class AndroidMockLocationModule extends ReactContextBaseJavaModule {
             location.setAccuracy(3f);
             location.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
 
-            locationManager.setTestProviderLocation(provider, location);
+            this.locationManager.setTestProviderLocation(this.provider, location);
 
-            locationManager.setTestProviderStatus(provider, LocationProvider.AVAILABLE, null,
+            this.locationManager.setTestProviderStatus(this.provider, LocationProvider.AVAILABLE, null,
                     System.currentTimeMillis());
         }
 
@@ -119,7 +120,7 @@ public class AndroidMockLocationModule extends ReactContextBaseJavaModule {
         criteria.setAccuracy(Criteria.ACCURACY_FINE);
         criteria.setPowerRequirement(Criteria.POWER_HIGH);
         String provider = LocationManager.NETWORK_PROVIDER;
-
+                 
         if (provider != null) {
             Location location = locationManager.getLastKnownLocation(provider);
 
@@ -144,15 +145,14 @@ public class AndroidMockLocationModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void stopMockLocation() {
-        LocationManager locationManager = (LocationManager) getReactApplicationContext()
-                .getSystemService(Context.LOCATION_SERVICE);
-        String provider = locationManager.getBestProvider(new Criteria(), true);
-
-        if (provider != null) {
-            locationManager.clearTestProviderEnabled(provider);
-            locationManager.clearTestProviderLocation(provider);
-            locationManager.clearTestProviderStatus(provider);
+        if (this.locationManager != null) { 
+            if (this.provider != null) {
+                this.locationManager.clearTestProviderEnabled(this.provider);
+                this.locationManager.clearTestProviderLocation(this.provider);
+                this.locationManager.clearTestProviderStatus(this.provider);
+            }
         }
+
     }
 
     @ReactMethod

@@ -8,7 +8,7 @@ type Location = {
 
 type AndroidMockLocationType = {
   multiply(a: number, b: number): Promise<number>;
-  setTestProviderLocation(useGPS: boolean, altitude: number, latitude: number, longitude: number): void;
+  setTestProviderLocation(useProvider: 'gps' | 'network', altitude: number, latitude: number, longitude: number): void;
   getMockLocation(useGPS: boolean): Promise<any>;
   stopMockLocation(): void;
   checkLocationPermission(): Promise<any>;
@@ -35,8 +35,8 @@ function multiply(a: number, b: number): Promise<number> {
   return AndroidMockLocation.multiply(a, b);
 }
 
-function setMockLocation(useGPS: boolean, location: Location) {
-  return AndroidMockLocation.setTestProviderLocation(useGPS, location.altitude, location.latitude, location.longitude);
+function setMockLocation(useProvider: 'gps' | 'network', location: Location) {
+  return AndroidMockLocation.setTestProviderLocation(useProvider, location.altitude, location.latitude, location.longitude);
 }
 
 function getMockLocation(useGPS: boolean) {

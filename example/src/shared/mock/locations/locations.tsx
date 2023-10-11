@@ -21,6 +21,13 @@ const locations: ILocationList = [
         latitude: 36.778259,
         longitude: -119.417931,
         altitude: 745
+    },
+    {
+        id: 3,
+        name: 'Gaza',
+        latitude: 31.486299, 
+        longitude: 34.448342,
+        altitude: 745
     }
 ]
 
