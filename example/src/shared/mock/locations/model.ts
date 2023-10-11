@@ -3,7 +3,6 @@ export interface ILocation {
     name: string
     latitude: number
     longitude: number
-    altitude: number
 }
 
 export type ILocationList = ILocation[]

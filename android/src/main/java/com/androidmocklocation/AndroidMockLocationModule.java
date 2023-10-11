@@ -42,7 +42,7 @@ public class AndroidMockLocationModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void setTestProviderLocation(String useProvider, Double altitude, Double latitude, Double longitude) {
+    public void setTestProviderLocation(String useProvider, Double latitude, Double longitude) {
         this.locationManager = (LocationManager) getReactApplicationContext()
                 .getSystemService(Context.LOCATION_SERVICE);
 

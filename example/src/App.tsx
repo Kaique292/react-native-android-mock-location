@@ -24,7 +24,6 @@ export default function App() {
   const [provider, setProvider] = React.useState<'gps' | 'network'>('gps')
 
   const [mockedLocation, setMockedLocation] = React.useState<{
-    altitude: number;
     longitude: number;
     latitude: number;
   } | null>(null);
@@ -86,8 +85,7 @@ export default function App() {
             <>
               <View style={styles.locationGrid}>
                 <Text><B>Latitude:</B> {location.latitude.toFixed(3)}</Text>
-                <Text><B>Longitude:</B> {location.longitude.toFixed(3)}</Text>
-                <Text><B>Altitude:</B> {location.altitude.toFixed(3)}</Text>
+                <Text><B>Longitude:</B> {location.longitude.toFixed(3)}</Text> 
               </View>
 
               {mockedLocation &&
@@ -95,8 +93,7 @@ export default function App() {
                   <Text style={{ textAlign: 'center' }}><B>PROVIDER LOCATION</B></Text>
                   <View style={styles.mockedLocation}>
                     <Text>{mockedLocation.latitude.toFixed(3)}</Text>
-                    <Text>{mockedLocation.longitude.toFixed(3)}</Text>
-                    <Text>{mockedLocation.altitude.toFixed(3)}</Text>
+                    <Text>{mockedLocation.longitude.toFixed(3)}</Text> 
                   </View>
                 </View>
               }

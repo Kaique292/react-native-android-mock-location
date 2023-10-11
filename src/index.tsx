@@ -3,12 +3,15 @@ import { NativeModules, Platform } from 'react-native';
 type Location = {
   latitude: number;
   longitude: number;
+}
+
+interface LocationMock extends Location {
   altitude: number;
 }
 
 type AndroidMockLocationType = {
-  setTestProviderLocation(useProvider: 'gps' | 'network', altitude: number, latitude: number, longitude: number): void;
-  getMockLocation(): Promise<any>;
+  setTestProviderLocation(useProvider: 'gps' | 'network', latitude: number, longitude: number): void;
+  getMockLocation(): Promise<LocationMock>;
   stopMockLocation(): void;
   checkLocationPermission(): Promise<any>;
   requestLocationPermission(): Promise<any>;
@@ -29,7 +32,7 @@ const onModuleError = () => new Proxy({}, {
 const AndroidMockLocation: AndroidMockLocationType = NativeModules.AndroidMockLocation ? NativeModules.AndroidMockLocation : onModuleError();
 
 function setMockLocation(useProvider: 'gps' | 'network', location: Location) {
-  return AndroidMockLocation.setTestProviderLocation(useProvider, location.altitude, location.latitude, location.longitude);
+  return AndroidMockLocation.setTestProviderLocation(useProvider, location.latitude, location.longitude);
 }
 
 function getMockLocation() {
