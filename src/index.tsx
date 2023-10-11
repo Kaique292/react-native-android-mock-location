@@ -1,5 +1,5 @@
 import { NativeModules, Platform } from 'react-native';
-
+ 
 type Location = {
   latitude: number;
   longitude: number;
