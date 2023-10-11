@@ -1,14 +1,24 @@
 import * as React from 'react';
 
-import { StyleSheet, View, Text, TouchableHighlight, Image } from 'react-native';
-import { stopMockLocation, setMockLocation, getMockLocation } from 'react-native-android-mock-location';
+import {
+    StyleSheet,
+    View,
+    Text,
+    TouchableHighlight,
+    Image
+} from 'react-native';
+import {
+    stopMockLocation,
+    setMockLocation,
+    getMockLocation
+} from 'react-native-android-mock-location';
 import useLocation from './shared/components/hooks/useLocation/useLocation';
 
 const B = ({ children }: { children: React.ReactNode }) => (
     <Text style={{ fontWeight: 'bold', color: 'black' }}>
         {children}
     </Text>
-)
+);
 
 export default function App() {
     const { setLocation, clearLocation, getLocationName, location } = useLocation();
@@ -16,26 +26,26 @@ export default function App() {
     const [mockedLocation, setMockedLocation] = React.useState<{ altitude: number, longitude: number, latitude: number } | null>(null);
 
     async function clearMockLocation() {
-        console.log('Cleared Mock Location')
-        clearLocation()
+        console.log('Cleared Mock Location');
+        clearLocation();
         // stopMockLocation()
     }
 
     async function isMocked() {
         await getMockLocation(false).then((location) => {
-            setMockedLocation(location)
+            setMockedLocation(location);
         }).catch((err) => {
-            console.log('Erro => ', err)
+            console.log('Erro => ', err);
         })
     }
 
 
     React.useEffect(() => {
         if (location) {
-            const { id, name, ...othersParams } = location
-            setMockLocation(false, othersParams)
+            const { id, name, ...othersParams } = location;
+            setMockLocation(false, othersParams);
 
-            setTimeout(() => isMocked(), 400)
+            setTimeout(() => isMocked(), 400);
             return
         }
         // return () => stopMockLocation()
