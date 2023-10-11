@@ -5,25 +5,27 @@ import {
   View,
   Text,
   TouchableHighlight,
-  Image
+  Image,
 } from 'react-native';
 import {
   stopMockLocation,
   setMockLocation,
-  getMockLocation
+  getMockLocation,
 } from 'react-native-android-mock-location';
 import useLocation from './shared/components/hooks/useLocation/useLocation';
 
 const B = ({ children }: { children: React.ReactNode }) => (
-  <Text style={{ fontWeight: 'bold', color: 'black' }}>
-    {children}
-  </Text>
+  <Text style={{ fontWeight: 'bold', color: 'black' }}>{children}</Text>
 );
 
 export default function App() {
   const { setLocation, clearLocation, getLocationName, location } = useLocation();
 
-  const [mockedLocation, setMockedLocation] = React.useState<{ altitude: number, longitude: number, latitude: number } | null>(null);
+  const [mockedLocation, setMockedLocation] = React.useState<{
+    altitude: number,
+    longitude: number,
+    latitude: number
+  } | null>(null);
 
   async function clearMockLocation() {
     console.log('Cleared Mock Location');
