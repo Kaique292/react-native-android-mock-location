@@ -22,9 +22,9 @@ export default function App() {
   const { setLocation, clearLocation, getLocationName, location } = useLocation();
 
   const [mockedLocation, setMockedLocation] = React.useState<{
-    altitude: number,
-    longitude: number,
-    latitude: number
+    altitude: number;
+    longitude: number;
+    latitude: number;
   } | null>(null);
 
   async function clearMockLocation() {
@@ -34,11 +34,12 @@ export default function App() {
   }
 
   async function isMocked() {
-    await getMockLocation(false).then((location) => {
-      setMockedLocation(location);
-    }).catch((err) => {
-      console.log('Erro => ', err);
-    })
+    await getMockLocation(false)
+      .then((response) => {
+        setMockedLocation(response);
+      }).catch((err) => {
+        console.log('Erro => ', err);
+      })
   }
 
 
