@@ -7,6 +7,14 @@ android mock location in developer mode
 ```sh
 npm install react-native-android-mock-location
 ```
+# Requirements
+
+- You need to request user permission to use location first
+
+    Add Permissions:
+- android.permission.ACCESS_MOCK_LOCATION
+- android.permission.ACCESS_COARSE_LOCATION
+- android.permission.ACCESS_FINE_LOCATION
 
 ## Usage
 

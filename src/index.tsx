@@ -1,7 +1,18 @@
 import { NativeModules, Platform } from 'react-native';
 
+type Location = {
+    latitude: number
+    longitude: number
+    altitude: number
+}
+
 type AndroidMockLocationType = {
     multiply(a: number, b: number): Promise<number>
+    setTestProviderLocation(useGPS: boolean, altitude: number, latitude: number, longitude: number): void
+    getMockLocation(useGPS: boolean): Promise<any>
+    stopMockLocation(): void
+    checkLocationPermission(): Promise<any>
+    requestLocationPermission(): Promise<any>
 }
 
 const LINKING_ERROR =
@@ -24,6 +35,31 @@ function multiply(a: number, b: number): Promise<number> {
     return AndroidMockLocation.multiply(a, b);
 }
 
+function setMockLocation(useGPS: boolean, location: Location) {
+    return AndroidMockLocation.setTestProviderLocation(useGPS, location.altitude, location.latitude, location.longitude)
+}
+
+function getMockLocation(useGPS: boolean) {
+    return AndroidMockLocation.getMockLocation(useGPS)
+}
+
+function stopMockLocation() {
+    return AndroidMockLocation.stopMockLocation()
+}
+
+function checkLocationPermission() {
+    return AndroidMockLocation.checkLocationPermission()
+}
+
+function requestLocationPermission() {
+    return AndroidMockLocation.requestLocationPermission()
+}
+
 export {
-    multiply
+    multiply,
+    setMockLocation,
+    getMockLocation,
+    stopMockLocation,
+    checkLocationPermission,
+    requestLocationPermission
 }
