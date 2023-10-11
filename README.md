@@ -1,6 +1,6 @@
 # react-native-android-mock-location
 
-android mock location in developer mode
+Allow to set mock location to your mobile provider seen
 
 ## Installation
 
@@ -18,12 +18,63 @@ npm install react-native-android-mock-location
 
 ## Usage
 
-```js
-import { multiply } from 'react-native-android-mock-location';
+> HOW TO SET MOCK LOCATION
+-  Maybe necessary set this inside a loop function, and override your mobile provider location
 
-// ...
+```tsx
+import { setTestProviderLocation } from 'react-native-android-mock-location';
 
-const result = await multiply(3, 7);
+type TUseProvier = 'gps' | 'newtork';
+const useProvider : TUseProvier = 'gps';
+
+type TLocation = {
+    latitude: number,
+    longitude: number
+}
+const location = {
+    latitude: 222.44,
+    longitude: 123.23
+}
+
+setTestProviderLocation(useProvider,location);
+```
+
+> HOW TO GET MOCK LOCATION
+-  This function get currento location your provider is using, u can check with de location you have set in setTestProvider to know if is work as well
+
+```tsx
+import { getMockLocation } from 'react-native-android-mock-location';
+
+const getLocationProviderIsUsing = await getMockLocation();
+
+console.log(getLocationProviderIsUsing)
+/* OUTPUT
+{
+  latitude: 123,
+  longitude: 111,
+  altitude: 333
+} 
+*/
+```
+
+> STOP MOCK LOCATION
+-  This function will stop mock location
+
+```tsx
+import { stopMockLocation } from 'react-native-android-mock-location';
+
+stopMockLocation();
+ 
+```
+
+> REQUEST AND CHECK PERMISSIONS LOCATION
+
+```tsx
+import { checkLocationPermission, requestLocationPermission } from 'react-native-android-mock-location';
+
+const requestPerm = await requestLocationPermission();
+const hasPerm = await checkLocationPermission();
+ 
 ```
 
 ## Contributing

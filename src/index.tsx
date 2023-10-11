@@ -13,8 +13,8 @@ type AndroidMockLocationType = {
   setTestProviderLocation(useProvider: 'gps' | 'network', latitude: number, longitude: number): void;
   getMockLocation(): Promise<LocationMock>;
   stopMockLocation(): void;
-  checkLocationPermission(): Promise<any>;
-  requestLocationPermission(): Promise<any>;
+  checkLocationPermission(): Promise<boolean>;
+  requestLocationPermission(): Promise<boolean>;
 }
 
 const LINKING_ERROR =
