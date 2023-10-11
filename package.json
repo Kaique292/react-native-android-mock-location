@@ -1,7 +1,7 @@
 {
   "name": "react-native-android-mock-location",
-  "version": "0.1.0",
-  "description": "android mock location in developer mode",
+  "version": "1.0.0",
+  "description": "Allow to set mock location to your mobile provider seen",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
   "types": "lib/typescript/src/index.d.ts",
