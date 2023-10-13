@@ -1,5 +1,9 @@
 # react-native-android-mock-location
 
+I BUILT THIS FOR USE ON EXPO, BUT DONT HAVE SUPPORT FOR REACT NATIVE PURE NATIVE MODULE.
+SO I REBUILT USING EXPO NATIVE MODULES
+THKS, HAVE FREE TO USE THIS FOR YOUR OWN REACT NATIVE PURE PROJECT
+
 Allow to set mock location to your mobile provider seen
 
 ## Installation
