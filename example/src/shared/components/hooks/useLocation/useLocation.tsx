@@ -1,4 +1,9 @@
 import * as React from 'react';
+import {
+    stopMockLocation,
+    setMockLocation
+} from 'react-native-android-mock-location';
+
 import locations from '../../../mock/locations/locations';
 import type { ILocation } from '../../../mock/locations/model';
 
@@ -25,9 +30,22 @@ const useLocation = () => {
     }
 
     function clearLocation() {
+        console.log('Clearing location')
         setCurrentLocation(null)
         setCurrentIndex(0)
+        stopMockLocation()
     }
+
+    React.useEffect(() => {
+        if (location) {
+            setMockLocation({
+                location: location
+            });
+            return
+        }
+
+        return () => stopMockLocation()
+    }, [location])
 
     return {
         clearLocation,

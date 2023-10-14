@@ -2,19 +2,21 @@ package com.androidmocklocation;
 
 import androidx.annotation.NonNull;
 import android.content.Context;
-import android.location.Criteria;
+import android.content.pm.PackageManager;
+
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
+import android.location.Criteria;
+import android.location.LocationListener;
 import android.location.LocationProvider;
 
 import android.app.Activity;
 import android.Manifest;
-import android.content.pm.PackageManager;
 import androidx.core.app.ActivityCompat;
-import android.os.SystemClock;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -27,12 +29,31 @@ import com.facebook.react.module.annotations.ReactModule;
 @ReactModule(name = AndroidMockLocationModule.NAME)
 public class AndroidMockLocationModule extends ReactContextBaseJavaModule {
     public static final String NAME = "AndroidMockLocation";
-    private static LocationManager locationManager;
-    private static Criteria criteria;
-    private static String provider;
 
-    public AndroidMockLocationModule(ReactApplicationContext reactContext) {
+    String providerName;
+    Context ctx;
+
+    static Double lat;
+    static Double lng;
+    private static AndroidMockLocationModule mockNetwork;
+    private static AndroidMockLocationModule mockGps;
+
+    public AndroidMockLocationModule(ReactApplicationContext reactContext, String providerName) {
         super(reactContext);
+
+        this.providerName = providerName;
+        this.ctx = getReactApplicationContext();
+
+        int powerUsage = 0;
+        int accuracy = 5;
+
+        if (Build.VERSION.SDK_INT >= 30) {
+            powerUsage = 1;
+            accuracy = 2;
+        }
+
+        LocationManager lm = (LocationManager) ctx.getSystemService(Context.LOCATION_SERVICE);
+        startup(lm, powerUsage, accuracy, /* maxRetryCount= */ 3, /* currentRetryCount= */ 0);
     }
 
     @Override
@@ -42,108 +63,127 @@ public class AndroidMockLocationModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void setTestProviderLocation(String useProvider, Double latitude, Double longitude, int updateDelay) {
-        this.locationManager = (LocationManager) getReactApplicationContext()
-                .getSystemService(Context.LOCATION_SERVICE);
-
-        this.criteria = new Criteria();
-        this.criteria.setAccuracy(Criteria.ACCURACY_FINE);
-        this.criteria.setPowerRequirement(Criteria.POWER_HIGH);
-
-        if (useProvider == "gps") {
-            this.provider = LocationManager.GPS_PROVIDER;
-        } else {
-            this.provider = LocationManager.NETWORK_PROVIDER;
-        }
-
-        if (this.provider != null) {
-            this.locationManager.addTestProvider(this.provider, false, false, false, false, true, true, true,
-                    Criteria.POWER_HIGH,
-                    Criteria.ACCURACY_FINE);
-            this.locationManager.setTestProviderEnabled(this.provider, true);
-
-            Location location = new Location(this.provider);
-
-            location.setLatitude(latitude);
-            location.setLongitude(longitude);
-            location.setAltitude(3.0);
-            location.setTime(System.currentTimeMillis());
-            location.setSpeed(0.01f);
-            location.setBearing(1f);
-            location.setAccuracy(3f);
-            location.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
-
-            this.locationManager.setTestProviderLocation(this.provider, location);
-
-            this.locationManager.setTestProviderStatus(this.provider, LocationProvider.AVAILABLE, null,
-                    System.currentTimeMillis());
-        }
-
-    }
-
-    @ReactMethod
-    public void requestLocationPermission(Promise promise) {
-        Activity currentActivity = getCurrentActivity();
-        String[] permissions = { Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION };
-        int requestCode = 1;
-
-        if (currentActivity != null) {
-            ActivityCompat.requestPermissions(currentActivity, permissions, requestCode);
-            promise.resolve(true);
-        } else {
-            promise.reject("NO_ACTIVITY", "Nenhuma atividade disponível para solicitar permissões.");
-        }
-    }
-
-    @ReactMethod
-    public void checkLocationPermission(Promise promise) {
-        String[] permissions = { Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION };
-        boolean granted = true;
-
-        for (String permission : permissions) {
-            if (ActivityCompat.checkSelfPermission(getReactApplicationContext(),
-                    permission) != PackageManager.PERMISSION_GRANTED) {
-                granted = false;
-                break;
-            }
-        }
-
-        promise.resolve(granted);
-    }
-
-    @ReactMethod
-    public void getMockLocation(Promise promise) {
-        if (this.provider != null) {
-            Location location = this.locationManager.getLastKnownLocation(this.provider);
-
-            if (location != null) {
-                double latitude = location.getLatitude();
-                double longitude = location.getLongitude();
-                double altitude = location.getAltitude();
-
-                WritableMap result = new WritableNativeMap();
-                result.putDouble("latitude", latitude);
-                result.putDouble("longitude", longitude);
-                result.putDouble("altitude", altitude);
-
-                promise.resolve(result);
-            } else {
-                promise.reject("NO_LOCATION", "Não foi possível obter a localização.");
+    private void startup(LocationManager lm, int powerUsage, int accuracy, int maxRetryCount, int currentRetryCount) {
+        if (currentRetryCount < maxRetryCount) {
+            try {
+                stopMockLocation();
+                lm.addTestProvider(providerName, false, false, false, false, false, true, true, powerUsage, accuracy);
+                lm.setTestProviderEnabled(providerName, true);
+            } catch (Exception e) {
+                startup(lm, powerUsage, accuracy, maxRetryCount, (currentRetryCount + 1));
             }
         } else {
-            promise.reject("NO_PROVIDER", "Nenhum provedor de localização disponível.");
+            throw new SecurityException("Not allowed to perform MOCK_LOCATION");
         }
     }
+
+    /**
+     * Pushes the location in the system (mock). This is where the magic gets done.
+     *
+     * @param lat latitude
+     * @param lon longitude
+     * @return Void
+     */
+    public void pushLocation(double lat, double lon) {
+        LocationManager lm = (LocationManager) ctx.getSystemService(Context.LOCATION_SERVICE);
+
+        Location mockLocation = new Location(providerName);
+        mockLocation.setLatitude(lat);
+        mockLocation.setLongitude(lon);
+        mockLocation.setAltitude(3F);
+        mockLocation.setTime(System.currentTimeMillis());
+        mockLocation.setSpeed(0.01F);
+        mockLocation.setBearing(1F);
+        mockLocation.setAccuracy(1F);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            mockLocation.setBearingAccuracyDegrees(0.1F);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            mockLocation.setVerticalAccuracyMeters(0.1F);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            mockLocation.setSpeedAccuracyMetersPerSecond(0.01F);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            mockLocation.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
+        }
+        lm.setTestProviderLocation(providerName, mockLocation);
+    }
+
+    @ReactMethod
+    public void applyLocation(Double latitude, Double longitude) {
+        lat = latitude;
+        lng = longitude;
+
+        try {
+            mockNetwork = new AndroidMockLocationModule(getReactApplicationContext(), LocationManager.NETWORK_PROVIDER);
+            mockGps = new AndroidMockLocationModule(getReactApplicationContext(), LocationManager.GPS_PROVIDER);
+        } catch (SecurityException e) {
+            e.printStackTrace();
+            stopMockLocation();
+            return;
+        }
+
+        exec(lat, lng);
+    }
+
+    /**
+     * Set a mocked location.
+     *
+     * @param lat latitude
+     * @param lng longitude
+     */
+    static void exec(double lat, double lng) {
+        try {
+            mockNetwork.pushLocation(lat, lng);
+            mockGps.pushLocation(lat, lng);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
+    }
+
+    @ReactMethod
+    public void setTestProviderLocation(Double latitude, Double longitude, int updateDelay) {
+        applyLocation(latitude,longitude);
+    }
+
+    // @ReactMethod
+    // public void requestLocationPermission(Promise promise) {
+    //     Activity currentActivity = getCurrentActivity();
+    //     String[] permissions = { Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION };
+    //     int requestCode = 1;
+
+    //     if (currentActivity != null) {
+    //         ActivityCompat.requestPermissions(currentActivity, permissions, requestCode);
+    //         promise.resolve(true);
+    //     } else {
+    //         promise.reject("NO_ACTIVITY", "Nenhuma atividade disponível para solicitar permissões.");
+    //     }
+    // }
+
+    // @ReactMethod
+    // public void checkLocationPermission(Promise promise) {
+    //     String[] permissions = { Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION };
+    //     boolean granted = true;
+
+    //     for (String permission : permissions) {
+    //         if (ActivityCompat.checkSelfPermission(getReactApplicationContext(),
+    //                 permission) != PackageManager.PERMISSION_GRANTED) {
+    //             granted = false;
+    //             break;
+    //         }
+    //     }
+
+    //     promise.resolve(granted);
+    // }
 
     @ReactMethod
     public void stopMockLocation() {
-        if (this.locationManager != null) {
-            if (this.provider != null) {
-                this.locationManager.clearTestProviderEnabled(this.provider);
-                this.locationManager.clearTestProviderLocation(this.provider);
-                this.locationManager.clearTestProviderStatus(this.provider);
-            }
+        try {
+            LocationManager lm = (LocationManager) ctx.getSystemService(Context.LOCATION_SERVICE);
+            lm.removeTestProvider(providerName);
+        } catch (Exception e) {
         }
-
     }
 }
