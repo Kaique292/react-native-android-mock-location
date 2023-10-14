@@ -23,13 +23,12 @@ npm install react-native-android-mock-location
 ## Usage
 
 > HOW TO SET MOCK LOCATION
--  Maybe necessary set this inside a loop function, and override your mobile provider location
+
+- If you are trying to mock location, and check with google maps. Maybe you may find some glitch, wich envolve your mock location getting override
+by your real location after few seconds. To solve this, you have to disable accuray location in settings of your phone.
 
 ```tsx
 import { setTestProviderLocation } from 'react-native-android-mock-location';
-
-type TUseProvier = 'gps' | 'newtork';
-const useProvider : TUseProvier = 'gps';
 
 type TLocation = {
     latitude: number,
@@ -40,25 +39,7 @@ const location = {
     longitude: 123.23
 }
 
-setTestProviderLocation(useProvider,location);
-```
-
-> HOW TO GET MOCK LOCATION
--  This function get currento location your provider is using, u can check with de location you have set in setTestProvider to know if is work as well
-
-```tsx
-import { getMockLocation } from 'react-native-android-mock-location';
-
-const getLocationProviderIsUsing = await getMockLocation();
-
-console.log(getLocationProviderIsUsing)
-/* OUTPUT
-{
-  latitude: 123,
-  longitude: 111,
-  altitude: 333
-} 
-*/
+setTestProviderLocation(location);
 ```
 
 > STOP MOCK LOCATION
@@ -68,16 +49,6 @@ console.log(getLocationProviderIsUsing)
 import { stopMockLocation } from 'react-native-android-mock-location';
 
 stopMockLocation();
- 
-```
-
-> REQUEST AND CHECK PERMISSIONS LOCATION
-
-```tsx
-import { checkLocationPermission, requestLocationPermission } from 'react-native-android-mock-location';
-
-const requestPerm = await requestLocationPermission();
-const hasPerm = await checkLocationPermission();
  
 ```
 
