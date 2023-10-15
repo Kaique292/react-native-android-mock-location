@@ -1,6 +1,6 @@
 {
   "name": "react-native-android-mock-location",
-  "version": "2.0.8",
+  "version": "2.5.2",
   "description": "Allow to set mock location to your mobile provider seen",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -83,9 +83,6 @@
     "example"
   ],
   "packageManager": "yarn@3.6.1",
-  "engines": {
-    "node": ">= 18.0.0"
-  },
   "jest": {
     "preset": "react-native",
     "modulePathIgnorePatterns": [
