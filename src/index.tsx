@@ -5,16 +5,9 @@ type Location = {
     longitude: number;
 }
 
-// interface LocationMock extends Location {
-//   altitude: number;
-// }
-
 type AndroidMockLocationType = {
     setTestProviderLocation(latitude: number, longitude: number, delay: number): void;
-    stopMockLocation(): void;
-    //   getMockLocation(): Promise<LocationMock>;
-    //   checkLocationPermission(): Promise<boolean>;
-    //   requestLocationPermission(): Promise<boolean>;
+    stopMockLocation(): void; 
 }
 
 const LINKING_ERROR =
@@ -38,26 +31,11 @@ function setMockLocation({
     return AndroidMockLocation.setTestProviderLocation(location.latitude, location.longitude, delay);
 }
 
-// function getMockLocation() {
-//   return AndroidMockLocation.getMockLocation();
-// }
-
 function stopMockLocation() {
     return AndroidMockLocation.stopMockLocation();
 }
 
-// function checkLocationPermission() {
-//   return AndroidMockLocation.checkLocationPermission();
-// }
-
-// function requestLocationPermission() {
-//   return AndroidMockLocation.requestLocationPermission();
-// }
-
 export {
     setMockLocation,
-    stopMockLocation,
-    //   getMockLocation,
-    //   checkLocationPermission,
-    //   requestLocationPermission
+    stopMockLocation
 }

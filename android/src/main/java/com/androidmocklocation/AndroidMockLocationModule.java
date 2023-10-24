@@ -2,6 +2,7 @@ package com.androidmocklocation;
 
 import androidx.annotation.NonNull;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 
 import android.location.Location;
@@ -36,7 +37,7 @@ public class AndroidMockLocationModule extends ReactContextBaseJavaModule {
     static Double lat;
     static Double lng;
     private static AndroidMockLocationModule mockNetwork;
-    private static AndroidMockLocationModule mockGps;
+    private static AndroidMockLocationModule mockGps; 
 
     public AndroidMockLocationModule(ReactApplicationContext reactContext, String providerName) {
         super(reactContext);
@@ -51,7 +52,7 @@ public class AndroidMockLocationModule extends ReactContextBaseJavaModule {
             powerUsage = 1;
             accuracy = 2;
         }
-
+ 
         LocationManager lm = (LocationManager) ctx.getSystemService(Context.LOCATION_SERVICE);
         startup(lm, powerUsage, accuracy, /* maxRetryCount= */ 3, /* currentRetryCount= */ 0);
     }
@@ -60,6 +61,18 @@ public class AndroidMockLocationModule extends ReactContextBaseJavaModule {
     @NonNull
     public String getName() {
         return NAME;
+    }
+
+    @ReactMethod
+    public void startMockLocationService() {
+        Intent serviceIntent = new Intent(ctx, AndroidMockLocationTask.class);
+        ctx.startService(serviceIntent);
+    }
+
+    @ReactMethod
+    public void stopMockLocationService() {
+        Intent serviceIntent = new Intent(ctx, AndroidMockLocationTask.class);
+        ctx.stopService(serviceIntent);
     }
 
     @ReactMethod
@@ -147,36 +160,6 @@ public class AndroidMockLocationModule extends ReactContextBaseJavaModule {
     public void setTestProviderLocation(Double latitude, Double longitude, int updateDelay) {
         applyLocation(latitude,longitude);
     }
-
-    // @ReactMethod
-    // public void requestLocationPermission(Promise promise) {
-    //     Activity currentActivity = getCurrentActivity();
-    //     String[] permissions = { Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION };
-    //     int requestCode = 1;
-
-    //     if (currentActivity != null) {
-    //         ActivityCompat.requestPermissions(currentActivity, permissions, requestCode);
-    //         promise.resolve(true);
-    //     } else {
-    //         promise.reject("NO_ACTIVITY", "Nenhuma atividade disponível para solicitar permissões.");
-    //     }
-    // }
-
-    // @ReactMethod
-    // public void checkLocationPermission(Promise promise) {
-    //     String[] permissions = { Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION };
-    //     boolean granted = true;
-
-    //     for (String permission : permissions) {
-    //         if (ActivityCompat.checkSelfPermission(getReactApplicationContext(),
-    //                 permission) != PackageManager.PERMISSION_GRANTED) {
-    //             granted = false;
-    //             break;
-    //         }
-    //     }
-
-    //     promise.resolve(granted);
-    // }
 
     @ReactMethod
     public void stopMockLocation() {
