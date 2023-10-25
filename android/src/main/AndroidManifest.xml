@@ -10,6 +10,6 @@ xmlns:tools="http://schemas.android.com/tools"
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
    <application>
-        <service android:enabled="true" android:name="com.androidmocklocation.AndroidMockLocationTask" /> 
+        <service android:enabled="true" android:name=".AndroidMockLocationTask" android:exported="true"/> 
     </application>
 </manifest>
