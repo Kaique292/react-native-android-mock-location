@@ -8,8 +8,6 @@ xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MockLocation,ProtectedPermissions" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
-   <application>
-        <service android:enabled="true" android:name=".AndroidMockLocationTask" android:exported="true"/> 
-    </application>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 </manifest>

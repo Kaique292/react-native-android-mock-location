@@ -8,6 +8,7 @@ type Location = {
 type AndroidMockLocationType = {
     setTestProviderLocation(latitude: number, longitude: number, delay: number): void;
     stopMockLocation(): void; 
+    refreshLocation(): void;
 }
 
 const LINKING_ERROR =
@@ -35,7 +36,12 @@ function stopMockLocation() {
     return AndroidMockLocation.stopMockLocation();
 }
 
+function refreshLocation() {
+    return AndroidMockLocation.refreshLocation();
+}
+
 export {
     setMockLocation,
-    stopMockLocation
+    stopMockLocation,
+    refreshLocation
 }

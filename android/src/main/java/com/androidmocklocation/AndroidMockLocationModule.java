@@ -25,7 +25,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeMap;
-import com.facebook.react.module.annotations.ReactModule;
+import com.facebook.react.module.annotations.ReactModule; 
 
 @ReactModule(name = AndroidMockLocationModule.NAME)
 public class AndroidMockLocationModule extends ReactContextBaseJavaModule {
@@ -63,19 +63,6 @@ public class AndroidMockLocationModule extends ReactContextBaseJavaModule {
         return NAME;
     }
 
-    @ReactMethod
-    public void startMockLocationService() {
-        Intent serviceIntent = new Intent(ctx, AndroidMockLocationTask.class);
-        ctx.startService(serviceIntent);
-    }
-
-    @ReactMethod
-    public void stopMockLocationService() {
-        Intent serviceIntent = new Intent(ctx, AndroidMockLocationTask.class);
-        ctx.stopService(serviceIntent);
-    }
-
-    @ReactMethod
     private void startup(LocationManager lm, int powerUsage, int accuracy, int maxRetryCount, int currentRetryCount) {
         if (currentRetryCount < maxRetryCount) {
             try {
@@ -97,7 +84,7 @@ public class AndroidMockLocationModule extends ReactContextBaseJavaModule {
      * @param lon longitude
      * @return Void
      */
-    public void pushLocation(double lat, double lon) {
+    public void pushLocation(double lat, double lon) { 
         LocationManager lm = (LocationManager) ctx.getSystemService(Context.LOCATION_SERVICE);
 
         Location mockLocation = new Location(providerName);
@@ -120,10 +107,9 @@ public class AndroidMockLocationModule extends ReactContextBaseJavaModule {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             mockLocation.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
         }
-        lm.setTestProviderLocation(providerName, mockLocation);
+        lm.setTestProviderLocation(providerName, mockLocation); 
     }
 
-    @ReactMethod
     public void applyLocation(Double latitude, Double longitude) {
         lat = latitude;
         lng = longitude;
@@ -138,6 +124,14 @@ public class AndroidMockLocationModule extends ReactContextBaseJavaModule {
         }
 
         exec(lat, lng);
+    }
+
+    @ReactMethod
+    public void refreshLocation() {
+        if (lat == null || lng == null) {
+            return;
+        } 
+        applyLocation(lat, lng);
     }
 
     /**
