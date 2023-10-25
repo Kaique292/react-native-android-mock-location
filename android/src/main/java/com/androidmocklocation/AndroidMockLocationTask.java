@@ -1,25 +1,26 @@
+package com.androidmocklocation;
+
 import android.app.Service;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
-
+import android.util.Log;
+ 
 public class AndroidMockLocationTask extends Service {
     private Handler handler;
     private Runnable runnable;
     private boolean isRunning = false;
-
+ 
     @Override
     public void onCreate() {
         super.onCreate();
         handler = new Handler();
         runnable = new Runnable() {
             @Override
-            public void run() {
-                // Coloque sua lógica de execução periódica aqui
-                if (isRunning) {
-                    // Execute a tarefa
-                    doSomething();
-                    handler.postDelayed(this, 5000); // Executa a cada 5 segundos
+            public void run() { 
+                if (isRunning) { 
+                    mangoJOU();
+                    handler.postDelayed(this, 5000); 
                 }
             }
         };
@@ -34,8 +35,7 @@ public class AndroidMockLocationTask extends Service {
 
      @Override
     public IBinder onBind(Intent intent) {
-        // Este método é necessário, mesmo que você não planeje utilizá-lo
-        // Você pode deixá-lo vazio
+         Log.i("ReactNative", "BINDANDO"); 
         return null;
     }
 
@@ -46,7 +46,7 @@ public class AndroidMockLocationTask extends Service {
         super.onDestroy();
     }
 
-    private void doSomething() {
-        // Implemente a lógica da tarefa aqui
+    private void mangoJOU() {
+         
     }
 }
