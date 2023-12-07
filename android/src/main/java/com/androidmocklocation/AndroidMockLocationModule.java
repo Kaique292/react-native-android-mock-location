@@ -36,6 +36,11 @@ public class AndroidMockLocationModule extends ReactContextBaseJavaModule {
     public static final String NAME = "AndroidMockLocation";
 
     int updateDelay = 100;
+    int accuracy = Criteria.ACCURACY_FINE;
+    Float altitude = 3F;
+    Float bearing = 0.1F;
+    Float speed = 0.01F;
+
     Context ctx;
 
     static Double lat;
@@ -52,14 +57,6 @@ public class AndroidMockLocationModule extends ReactContextBaseJavaModule {
         super(reactContext);
 
         this.ctx = getReactApplicationContext();
-
-        int powerUsage = 2;
-        int accuracy = 1;
-
-        if (Build.VERSION.SDK_INT >= 30) {
-            powerUsage = 1;
-            accuracy = 1;
-        }
  
         LocationManager lm = (LocationManager) ctx.getSystemService(Context.LOCATION_SERVICE);
         startup(lm, Criteria.POWER_MEDIUM, Criteria.ACCURACY_FINE, /* maxRetryCount= */ 3, /* currentRetryCount= */ 0); 
@@ -103,19 +100,19 @@ public class AndroidMockLocationModule extends ReactContextBaseJavaModule {
 
         networkLocation.setLatitude(lat);
         networkLocation.setLongitude(lon);
-        networkLocation.setAltitude(3F);
+        networkLocation.setAltitude(altitude);
         networkLocation.setTime(System.currentTimeMillis());
-        networkLocation.setSpeed(0.01F);
-        networkLocation.setBearing(0.0F);
-        networkLocation.setAccuracy(Criteria.ACCURACY_FINE);
+        networkLocation.setSpeed(speed);
+        networkLocation.setBearing(bearing);
+        networkLocation.setAccuracy(accuracy);
 
         gpsLocation.setLatitude(lat);
         gpsLocation.setLongitude(lon);
-        gpsLocation.setAltitude(3F);
+        gpsLocation.setAltitude(altitude);
         gpsLocation.setTime(System.currentTimeMillis());
-        gpsLocation.setSpeed(0.01F);
-        gpsLocation.setBearing(0.0F);
-        gpsLocation.setAccuracy(Criteria.ACCURACY_FINE);
+        gpsLocation.setSpeed(speed);
+        gpsLocation.setBearing(bearing);
+        gpsLocation.setAccuracy(accuracy);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             networkLocation.setBearingAccuracyDegrees(0.1F);
@@ -198,8 +195,13 @@ public class AndroidMockLocationModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void setTestProviderLocation(Double latitude, Double longitude, int delay) {
+    public void setTestProviderLocation(Double latitude, Double longitude, int delay, int accuracy, Float altitude, Float bearing, Float speed) {
         updateDelay = delay;
+        accuracy = accuracy;
+        altitude = altitude;
+        bearing = bearing;
+        speed = speed;
+
         applyLocation(latitude,longitude);
     }
 

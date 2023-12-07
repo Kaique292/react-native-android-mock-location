@@ -1,7 +1,7 @@
 {
   "name": "react-native-android-mock-location",
-  "version": "3.0.0",
-  "description": "Allow to set mock location to your mobile provider seen. A v3 has a looper built-in to allow you to set a mock location every X seconds. For default every 100ms",
+  "version": "3.1.4",
+  "description": "More customizable options for mock location",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
   "types": "lib/typescript/src/index.d.ts",

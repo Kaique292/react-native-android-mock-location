@@ -37,9 +37,16 @@ const useLocation = () => {
     }
 
     React.useEffect(() => {
-        if (location) {
+        if (location) { 
             setMockLocation({
-                location: location
+                location: location,
+                options: {
+                    delay: 50,
+                    accuracy: 1.0,
+                    altitude: 10,
+                    bearing: 0,
+                    speed: 0.01
+                }
             });
             return
         }

@@ -5,8 +5,16 @@ type Location = {
     longitude: number;
 }
 
+type IOptionsProver = {
+    altitude?: number
+    speed?: number
+    bearing?: number
+    accuracy?: number
+    delay?: number
+}
+
 type AndroidMockLocationType = {
-    setTestProviderLocation(latitude: number, longitude: number, delay: number): void;
+    setTestProviderLocation(latitude: number, longitude: number, delay?:number, accuracy?:number, altitude?:number, bearing?:number, speed?:number): void;
     stopMockLocation(): void;
 }
 
@@ -26,9 +34,16 @@ const AndroidMockLocation: AndroidMockLocationType = NativeModules.AndroidMockLo
 
 function setMockLocation({
     location,
-    delay = 50
-}: { location: Location, delay?: number }) {
-    return AndroidMockLocation.setTestProviderLocation(location.latitude, location.longitude, delay);
+    options = {
+        delay: 0,
+        accuracy: 1,
+        altitude: 3,
+        bearing: 0,
+        speed: 0.01
+    }
+}: { location: Location, options?: IOptionsProver }) {
+    const { delay, accuracy, altitude, bearing, speed } = options;
+    return AndroidMockLocation.setTestProviderLocation(location.latitude, location.longitude, delay, accuracy, altitude, bearing, speed);
 }
 
 function stopMockLocation() {
