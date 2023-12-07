@@ -28,18 +28,35 @@ npm install react-native-android-mock-location
 by your real location after few seconds. To solve this, you have to disable accuray location in settings of your phone.
 
 ```tsx
-import { setTestProviderLocation } from 'react-native-android-mock-location';
+import {
+    stopMockLocation,
+    setMockLocation
+} from 'react-native-android-mock-location';
 
 type TLocation = {
     latitude: number,
     longitude: number
 }
+interface IMockLocation {
+    location: TLocation
+    delay?: number
+}
+
 const location = {
     latitude: 222.44,
     longitude: 123.23
 }
 
-setTestProviderLocation(location);
+setMockLocation({
+    location: location
+});
+
+// or
+
+setMockLocation({
+    location: location,
+    delay: 120 //default is 100ms
+});
 ```
 
 > STOP MOCK LOCATION
