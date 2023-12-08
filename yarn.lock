@@ -3956,6 +3956,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/geojson@npm:^7946.0.10":
+  version: 7946.0.13
+  resolution: "@types/geojson@npm:7946.0.13"
+  checksum: b3b68457c89bc3f0445dc9eb54d07e6f89658672867c54989bc7f71f87d54e562195b291d43e1b84476493351271d7ccb9f5c6ab2012b29fbafbb0e8e43c4bca
+  languageName: node
+  linkType: hard
+
 "@types/graceful-fs@npm:^4.1.3":
   version: 4.1.7
   resolution: "@types/graceful-fs@npm:4.1.7"
@@ -11833,6 +11840,7 @@ __metadata:
     pod-install: ^0.1.0
     react: 18.2.0
     react-native: 0.72.5
+    react-native-maps: ^1.8.3
   languageName: unknown
   linkType: soft
 
@@ -11857,6 +11865,7 @@ __metadata:
     react: 18.2.0
     react-native: 0.72.5
     react-native-builder-bob: ^0.20.0
+    react-native-maps: ^1.8.3
     release-it: ^15.0.0
     turbo: ^1.10.7
     typescript: ^5.0.2
@@ -11896,6 +11905,22 @@ __metadata:
   bin:
     bob: bin/bob
   checksum: 258da6ecd03be52cc05a3e3a7c481890c7c0b7b62ae9f263c5f3d6fafeae95bd9445ad2f6c2513f7f4e4569eee935a18ae94c7491f58d6916af515c88de9e0a1
+  languageName: node
+  linkType: hard
+
+"react-native-maps@npm:^1.8.3":
+  version: 1.8.3
+  resolution: "react-native-maps@npm:1.8.3"
+  dependencies:
+    "@types/geojson": ^7946.0.10
+  peerDependencies:
+    react: ">= 17.0.1"
+    react-native: ">= 0.64.3"
+    react-native-web: ">= 0.11"
+  peerDependenciesMeta:
+    react-native-web:
+      optional: true
+  checksum: af5dcae4646e29620496bd6508d926a3a9ae559188ade40b9f09061071e52f2a1a71c4569d7800e75c5af13c02d6afbea2a5c61c9b104e4b58612102e6679dfd
   languageName: node
   linkType: hard
 
