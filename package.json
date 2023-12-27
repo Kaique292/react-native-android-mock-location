@@ -1,6 +1,6 @@
 {
   "name": "react-native-android-mock-location",
-  "version": "4.1.0",
+  "version": "4.2.0",
   "description": "Fix network provider is not a test provider",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
