@@ -83,10 +83,10 @@ public class AndroidMockLocationModule extends ReactContextBaseJavaModule {
                 stopMockLocation();
 
                 lm.addTestProvider(LocationManager.NETWORK_PROVIDER, false, false, false, false, false, true, true, powerUsage, accuracy);
-                lm.addTestProvider(LocationManager.GPS_PROVIDER, false, false, false, false, false, true, true, powerUsage, accuracy);
+                // lm.addTestProvider(LocationManager.GPS_PROVIDER, false, false, false, false, false, true, true, powerUsage, accuracy);
 
                 lm.setTestProviderEnabled(LocationManager.NETWORK_PROVIDER, true); 
-                lm.setTestProviderEnabled(LocationManager.GPS_PROVIDER, true); 
+                // lm.setTestProviderEnabled(LocationManager.GPS_PROVIDER, true); 
             } catch (Exception e) {
                 startup(lm, powerUsage, accuracy, maxRetryCount, (currentRetryCount + 1));
             }
@@ -160,7 +160,7 @@ public class AndroidMockLocationModule extends ReactContextBaseJavaModule {
 
                     if(!isStop) {
                         myLocationManager.pushLocation(lat, lng, LocationManager.NETWORK_PROVIDER);
-                        myLocationManager.pushLocation(lat, lng, LocationManager.GPS_PROVIDER);
+                        // myLocationManager.pushLocation(lat, lng, LocationManager.GPS_PROVIDER);
                             
                         sendEmptyMessage(HANDLER_MSG_ID); 
                     }
@@ -184,7 +184,7 @@ public class AndroidMockLocationModule extends ReactContextBaseJavaModule {
     static void exec(double lat, double lng) {
         try {
             myLocationManager.pushLocation(lat, lng, LocationManager.NETWORK_PROVIDER);
-            myLocationManager.pushLocation(lat, lng, LocationManager.GPS_PROVIDER);
+            // myLocationManager.pushLocation(lat, lng, LocationManager.GPS_PROVIDER);
         } catch (Exception e) {
             e.printStackTrace();
             return;
@@ -212,7 +212,7 @@ public class AndroidMockLocationModule extends ReactContextBaseJavaModule {
             LocationManager lm = (LocationManager) ctx.getSystemService(Context.LOCATION_SERVICE);
            
             lm.removeTestProvider(LocationManager.NETWORK_PROVIDER);
-            lm.removeTestProvider(LocationManager.GPS_PROVIDER); 
+            // lm.removeTestProvider(LocationManager.GPS_PROVIDER); 
             
         } catch (Exception e) { 
             e.printStackTrace();
