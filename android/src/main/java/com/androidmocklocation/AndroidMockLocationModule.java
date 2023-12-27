@@ -59,7 +59,16 @@ public class AndroidMockLocationModule extends ReactContextBaseJavaModule {
         this.ctx = getReactApplicationContext();
  
         LocationManager lm = (LocationManager) ctx.getSystemService(Context.LOCATION_SERVICE);
-        startup(lm, Criteria.POWER_MEDIUM, Criteria.ACCURACY_FINE, /* maxRetryCount= */ 3, /* currentRetryCount= */ 0); 
+
+        int powerUsage = 0;
+        int accuracy = 5;
+
+        if (Build.VERSION.SDK_INT >= 30) {
+            powerUsage = 1;
+            accuracy = 2;
+        }
+ 
+        startup(lm, powerUsage, accuracy, /* maxRetryCount= */ 3, /* currentRetryCount= */ 0); 
     }
 
     @Override
@@ -74,7 +83,7 @@ public class AndroidMockLocationModule extends ReactContextBaseJavaModule {
                 stopMockLocation();
 
                 lm.addTestProvider(LocationManager.NETWORK_PROVIDER, false, false, false, false, false, true, true, powerUsage, accuracy);
-                lm.addTestProvider(LocationManager.GPS_PROVIDER, false, false, false, false, false, true, true, Criteria.POWER_LOW, accuracy);
+                lm.addTestProvider(LocationManager.GPS_PROVIDER, false, false, false, false, false, true, true, powerUsage, accuracy);
 
                 lm.setTestProviderEnabled(LocationManager.NETWORK_PROVIDER, true); 
                 lm.setTestProviderEnabled(LocationManager.GPS_PROVIDER, true); 
