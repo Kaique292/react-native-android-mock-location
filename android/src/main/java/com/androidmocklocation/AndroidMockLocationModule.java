@@ -50,7 +50,7 @@ public class AndroidMockLocationModule extends ReactContextBaseJavaModule {
     private static AndroidMockLocationModule myLocationManager; 
     private HandlerThread mLocHandlerThread;
     private Handler mLocHandler;
-    private boolean isStop = false;
+    private boolean isStop = false; 
     private static final int HANDLER_MSG_ID = 0;
 
     public AndroidMockLocationModule(ReactApplicationContext reactContext) {
@@ -72,11 +72,12 @@ public class AndroidMockLocationModule extends ReactContextBaseJavaModule {
         if (currentRetryCount < maxRetryCount) {
             try {
                 stopMockLocation();
+
                 lm.addTestProvider(LocationManager.NETWORK_PROVIDER, false, false, false, false, false, true, true, powerUsage, accuracy);
-                lm.setTestProviderEnabled(LocationManager.NETWORK_PROVIDER, true);
-                
-                lm.addTestProvider(LocationManager.GPS_PROVIDER, false, false, false, false, false, true, true, powerUsage, accuracy);
-                lm.setTestProviderEnabled(LocationManager.GPS_PROVIDER, true);
+                lm.addTestProvider(LocationManager.GPS_PROVIDER, false, false, false, false, false, true, true, Criteria.POWER_LOW, accuracy);
+
+                lm.setTestProviderEnabled(LocationManager.NETWORK_PROVIDER, true); 
+                lm.setTestProviderEnabled(LocationManager.GPS_PROVIDER, true); 
             } catch (Exception e) {
                 startup(lm, powerUsage, accuracy, maxRetryCount, (currentRetryCount + 1));
             }
@@ -92,45 +93,30 @@ public class AndroidMockLocationModule extends ReactContextBaseJavaModule {
      * @param lon longitude
      * @return Void
      */
-    public void pushLocation(double lat, double lon) { 
+    public void pushLocation(double lat, double lon, String providerType) {  
         LocationManager lm = (LocationManager) ctx.getSystemService(Context.LOCATION_SERVICE);
 
-        Location networkLocation = new Location(LocationManager.NETWORK_PROVIDER);
-        Location gpsLocation = new Location(LocationManager.GPS_PROVIDER);
+        Location providerLocation = new Location(providerType); 
 
-        networkLocation.setLatitude(lat);
-        networkLocation.setLongitude(lon);
-        networkLocation.setAltitude(altitude);
-        networkLocation.setTime(System.currentTimeMillis());
-        networkLocation.setSpeed(speed);
-        networkLocation.setBearing(bearing);
-        networkLocation.setAccuracy(accuracy);
-
-        gpsLocation.setLatitude(lat);
-        gpsLocation.setLongitude(lon);
-        gpsLocation.setAltitude(altitude);
-        gpsLocation.setTime(System.currentTimeMillis());
-        gpsLocation.setSpeed(speed);
-        gpsLocation.setBearing(bearing);
-        gpsLocation.setAccuracy(accuracy);
+        providerLocation.setLatitude(lat);
+        providerLocation.setLongitude(lon);
+        providerLocation.setAltitude(altitude);
+        providerLocation.setTime(System.currentTimeMillis());
+        providerLocation.setSpeed(speed);
+        providerLocation.setBearing(bearing);
+        providerLocation.setAccuracy(accuracy); 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            networkLocation.setBearingAccuracyDegrees(0.1F);
-            networkLocation.setVerticalAccuracyMeters(0.1F);
-            networkLocation.setSpeedAccuracyMetersPerSecond(0.01F);
-
-            gpsLocation.setBearingAccuracyDegrees(0.1F);
-            gpsLocation.setVerticalAccuracyMeters(0.1F);
-            gpsLocation.setSpeedAccuracyMetersPerSecond(0.01F);
+            providerLocation.setBearingAccuracyDegrees(0.1F);
+            providerLocation.setVerticalAccuracyMeters(0.1F);
+            providerLocation.setSpeedAccuracyMetersPerSecond(0.01F); 
         } 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            networkLocation.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
-            gpsLocation.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
+            providerLocation.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos()); 
         }
-        
-        lm.setTestProviderLocation(LocationManager.GPS_PROVIDER, gpsLocation); 
-        lm.setTestProviderLocation(LocationManager.NETWORK_PROVIDER, networkLocation); 
+         
+        lm.setTestProviderLocation(providerType, providerLocation); 
     }
 
     public void applyLocation(Double latitude, Double longitude) {
@@ -164,7 +150,8 @@ public class AndroidMockLocationModule extends ReactContextBaseJavaModule {
                     Thread.sleep(updateDelay); 
 
                     if(!isStop) {
-                        myLocationManager.pushLocation(lat, lng);
+                        myLocationManager.pushLocation(lat, lng, LocationManager.NETWORK_PROVIDER);
+                        myLocationManager.pushLocation(lat, lng, LocationManager.GPS_PROVIDER);
                             
                         sendEmptyMessage(HANDLER_MSG_ID); 
                     }
@@ -187,7 +174,8 @@ public class AndroidMockLocationModule extends ReactContextBaseJavaModule {
      */
     static void exec(double lat, double lng) {
         try {
-            myLocationManager.pushLocation(lat, lng);
+            myLocationManager.pushLocation(lat, lng, LocationManager.NETWORK_PROVIDER);
+            myLocationManager.pushLocation(lat, lng, LocationManager.GPS_PROVIDER);
         } catch (Exception e) {
             e.printStackTrace();
             return;
@@ -211,11 +199,12 @@ public class AndroidMockLocationModule extends ReactContextBaseJavaModule {
             isStop = true;
             mLocHandler.removeMessages(HANDLER_MSG_ID);   
             mLocHandlerThread.quit(); 
-            
+             
             LocationManager lm = (LocationManager) ctx.getSystemService(Context.LOCATION_SERVICE);
+           
             lm.removeTestProvider(LocationManager.NETWORK_PROVIDER);
-            lm.removeTestProvider(LocationManager.GPS_PROVIDER);
-        
+            lm.removeTestProvider(LocationManager.GPS_PROVIDER); 
+            
         } catch (Exception e) { 
             e.printStackTrace();
         }

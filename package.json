@@ -1,7 +1,7 @@
 {
   "name": "react-native-android-mock-location",
-  "version": "4.0.0",
-  "description": "Mock location with map view",
+  "version": "4.1.0",
+  "description": "Fix network provider is not a test provider",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
   "types": "lib/typescript/src/index.d.ts",
