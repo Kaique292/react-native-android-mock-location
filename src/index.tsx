@@ -16,6 +16,7 @@ type IOptionsProver = {
 type AndroidMockLocationType = {
     setTestProviderLocation(latitude: number, longitude: number, delay?:number, accuracy?:number, altitude?:number, bearing?:number, speed?:number): void;
     stopMockLocation(): void;
+    getError(): string;
 }
 
 const LINKING_ERROR =
@@ -50,7 +51,12 @@ function stopMockLocation() {
     return AndroidMockLocation.stopMockLocation();
 }
 
+function getError() {
+    return AndroidMockLocation.getError();
+}
+
 export {
     setMockLocation,
-    stopMockLocation
+    stopMockLocation,
+    getError
 }
