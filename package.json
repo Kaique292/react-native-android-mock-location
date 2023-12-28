@@ -1,7 +1,7 @@
 {
   "name": "react-native-android-mock-location",
-  "version": "4.2.0",
-  "description": "Fix network provider is not a test provider",
+  "version": "4.3.0",
+  "description": "Fix issues, dont have support for SDK >= 34",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
   "types": "lib/typescript/src/index.d.ts",
