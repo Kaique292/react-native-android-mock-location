@@ -10,6 +10,7 @@ import android.location.LocationManager;
 import android.location.Criteria;
 import android.location.LocationListener;
 import android.location.LocationProvider;
+import android.location.provider.ProviderProperties;
 import android.util.Log;
 
 import android.app.Activity;
@@ -83,17 +84,51 @@ public class AndroidMockLocationModule extends ReactContextBaseJavaModule {
             try {
                 stopMockLocation();
 
-                lm.addTestProvider(LocationManager.NETWORK_PROVIDER, false, false, false, false, false, true, true, powerUsage, accuracy);
-                lm.addTestProvider(LocationManager.GPS_PROVIDER, false, false, false, false, false, true, true, powerUsage, accuracy);
+                addTestProviderNetwork(lm);
+                addTestProviderGPS(lm);
 
-                lm.setTestProviderEnabled(LocationManager.NETWORK_PROVIDER, true); 
-                lm.setTestProviderEnabled(LocationManager.GPS_PROVIDER, true); 
             } catch (Exception e) {
                 errorException = e;  
                 startup(lm, powerUsage, accuracy, maxRetryCount, (currentRetryCount + 1));
             }
         } else {
             throw new SecurityException("Not allowed to perform MOCK_LOCATION");
+        }
+    }
+
+    private void addTestProviderNetwork(LocationManager lm) {
+        try { 
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                lm.addTestProvider(LocationManager.NETWORK_PROVIDER, true, false,
+                        true, true, true, true,
+                        true, ProviderProperties.POWER_USAGE_LOW, ProviderProperties.ACCURACY_COARSE);
+            } else {
+                lm.addTestProvider(LocationManager.NETWORK_PROVIDER, true, false,
+                        true, true, true, true,
+                        true, Criteria.POWER_LOW, Criteria.ACCURACY_COARSE);
+            }
+            if (!lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+                lm.setTestProviderEnabled(LocationManager.NETWORK_PROVIDER, true);
+            }
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void addTestProviderGPS(LocationManager lm) {
+        try { 
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                lm.addTestProvider(LocationManager.GPS_PROVIDER, false, true, false,
+                        false, true, true, true, ProviderProperties.POWER_USAGE_HIGH, ProviderProperties.ACCURACY_FINE);
+            } else {
+                lm.addTestProvider(LocationManager.GPS_PROVIDER, false, true, false,
+                        false, true, true, true, Criteria.POWER_HIGH, Criteria.ACCURACY_FINE);
+            }
+            if (!lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                lm.setTestProviderEnabled(LocationManager.GPS_PROVIDER, true);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -222,9 +257,16 @@ public class AndroidMockLocationModule extends ReactContextBaseJavaModule {
              
             LocationManager lm = (LocationManager) ctx.getSystemService(Context.LOCATION_SERVICE);
            
-            lm.removeTestProvider(LocationManager.NETWORK_PROVIDER);
-            lm.removeTestProvider(LocationManager.GPS_PROVIDER); 
-            
+            if (lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+                lm.setTestProviderEnabled(LocationManager.NETWORK_PROVIDER, false);
+                lm.removeTestProvider(LocationManager.NETWORK_PROVIDER);
+            }
+
+            if (lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                lm.setTestProviderEnabled(LocationManager.GPS_PROVIDER, false);
+                lm.removeTestProvider(LocationManager.GPS_PROVIDER);
+            }
+      
         } catch (Exception e) { 
             e.printStackTrace();
         }
