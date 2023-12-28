@@ -1,6 +1,6 @@
 {
   "name": "react-native-android-mock-location",
-  "version": "4.3.0",
+  "version": "4.3.1",
   "description": "Fix issues, dont have support for SDK >= 34",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",

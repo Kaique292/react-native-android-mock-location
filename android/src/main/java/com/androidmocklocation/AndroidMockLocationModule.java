@@ -61,16 +61,8 @@ public class AndroidMockLocationModule extends ReactContextBaseJavaModule {
         this.ctx = getReactApplicationContext();
  
         LocationManager lm = (LocationManager) ctx.getSystemService(Context.LOCATION_SERVICE);
-
-        int powerUsage = 0;
-        int accuracy = 1;
-
-        if (Build.VERSION.SDK_INT >= 30) {
-            powerUsage = 1;
-            accuracy = 2;
-        }
  
-        startup(lm, powerUsage, accuracy, /* maxRetryCount= */ 3, /* currentRetryCount= */ 0); 
+        startup(lm, /* maxRetryCount= */ 3, /* currentRetryCount= */ 0); 
     }
 
     @Override
@@ -79,7 +71,7 @@ public class AndroidMockLocationModule extends ReactContextBaseJavaModule {
         return NAME;
     }
 
-    private void startup(LocationManager lm, int powerUsage, int accuracy, int maxRetryCount, int currentRetryCount) {
+    private void startup(LocationManager lm, int maxRetryCount, int currentRetryCount) {
         if (currentRetryCount < maxRetryCount) {
             try {
                 stopMockLocation();
@@ -89,7 +81,7 @@ public class AndroidMockLocationModule extends ReactContextBaseJavaModule {
 
             } catch (Exception e) {
                 errorException = e;  
-                startup(lm, powerUsage, accuracy, maxRetryCount, (currentRetryCount + 1));
+                startup(lm, maxRetryCount, (currentRetryCount + 1));
             }
         } else {
             throw new SecurityException("Not allowed to perform MOCK_LOCATION");
